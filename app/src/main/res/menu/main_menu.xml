@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item  android:id="@+id/addNewCardMenuBtn"
+        android:title="Dodaj kartę"
+        app:showAsAction="never"/>
+
+    <item  android:id="@+id/importMenuBtn"
+        android:title="Import"
+        app:showAsAction="never"/>
+
+    <item  android:id="@+id/exportMenuBtn"
+        android:title="Eksport"
+        app:showAsAction="never"/>
+
+    <item  android:id="@+id/logoutMenuBtn"
+        android:title="Wyloguj"
+        app:showAsAction="never"/>
+
+</menu>

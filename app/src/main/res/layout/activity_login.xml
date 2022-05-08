@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logowanie"
+        android:textSize="50sp"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="50dp"/>
+
+    <EditText
+        android:id="@+id/username_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Login"
+        android:textSize="25sp"
+        android:inputType="textPersonName"
+        android:layout_marginBottom="20dp"
+        android:paddingLeft="20dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_login_layout"
+        app:passwordToggleEnabled="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/password_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Hasło"
+            android:textSize="25sp"
+            android:inputType="textPassword"
+            android:layout_marginBottom="20dp"
+            android:paddingStart="20sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rememberme"
+        android:textSize="20sp"
+        android:text="Zapamiętaj mnie"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/loginBtn"
+        android:text="Zaloguj"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/createAnAccountBtn"
+        android:text="Stwórz konto"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="30dp"/>
+
+</LinearLayout>
