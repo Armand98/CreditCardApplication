@@ -2,15 +2,13 @@ package com.example.creditcartapplication;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+import android.os.Environment;
+import android.widget.Toast;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class CardDatabase extends SQLiteOpenHelper {
@@ -117,12 +115,20 @@ public class CardDatabase extends SQLiteOpenHelper {
 
     public Boolean exportCardDatabase() {
 
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/pdf");
-        intent.putExtra(Intent.EXTRA_TITLE, "invoice.pdf");
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File file = new File(dir, "text");
 
-        
+        try {
+            File txtFile = new File(file, "plik.txt");
+            FileWriter writer = new FileWriter(txtFile);
+            writer.append("Tresc pliku!");
+            writer.flush();
+            writer.close();
+            Toast.makeText(mContext.getApplicationContext(), "Zapisano!",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return true;
     }

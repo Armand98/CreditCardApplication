@@ -1,6 +1,11 @@
 package com.example.creditcartapplication;
 
+import static android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION;
+import static android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -8,7 +13,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,34 +34,42 @@ public class HomeActivity extends AppCompatActivity {
     String username;
     CardDatabase cardDB;
     private static final int STORAGE_PERMISSION_CODE = 100;
-    private static final int MANAGE_PERMISSION_CODE = 101;
+    private static final int APP_STORAGE_ACCESS_REQUEST_CODE = 101;
 
-    private Boolean writeExternalStoragePermission = false;
     private Boolean manageExternalStoragePermission = false;
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     public Boolean checkPermission()
     {
-        if (ContextCompat.checkSelfPermission(HomeActivity.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+        if (!Environment.isExternalStorageManager()) {
 
-            ActivityCompat.requestPermissions(HomeActivity.this,
-                    new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
-                    STORAGE_PERMISSION_CODE);
+            Uri uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID);
+            Intent intent = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                intent = new Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri);
+            }
+            startActivityForResult(intent, APP_STORAGE_ACCESS_REQUEST_CODE);
+
         } else {
-            writeExternalStoragePermission = true;
-        }
-
-        if (ContextCompat.checkSelfPermission(HomeActivity.this,
-                Manifest.permission.MANAGE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-
-            ActivityCompat.requestPermissions(HomeActivity.this,
-                    new String[] { Manifest.permission.MANAGE_EXTERNAL_STORAGE },
-                    MANAGE_PERMISSION_CODE);
-        } else {
+            System.out.println("Mamy uprawnienia MANAGE!");
             manageExternalStoragePermission = true;
         }
 
-        return (writeExternalStoragePermission && manageExternalStoragePermission);
+        return manageExternalStoragePermission;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == APP_STORAGE_ACCESS_REQUEST_CODE)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager())
+                {
+                    System.out.println("Mamy uprawnienia MANAGE! 222");
+                }
+            }
+        }
     }
 
     @Override
@@ -73,16 +89,6 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(HomeActivity.this, "Odmówiono uprawnień write",
                         Toast.LENGTH_SHORT).show();
             }
-        } else if (requestCode == MANAGE_PERMISSION_CODE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(HomeActivity.this, "Przyznano uprawnienia",
-                        Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(HomeActivity.this, "Odmówiono uprawnień manage",
-                        Toast.LENGTH_SHORT).show();
-            }
         }
     }
 
@@ -93,6 +99,7 @@ public class HomeActivity extends AppCompatActivity {
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 

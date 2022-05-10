@@ -16,7 +16,7 @@
         android:gravity="center_horizontal"
         android:textStyle="bold"
         android:layout_marginTop="40dp"
-        android:layout_marginBottom="50dp"/>
+        android:layout_marginBottom="20dp"/>
 
     <EditText
         android:id="@+id/cardNewBankName"
@@ -94,7 +94,6 @@
             android:text="Anuluj"
             android:textStyle="bold"
             android:textSize="20sp"
-            android:layout_marginBottom="20dp"
             android:layout_weight="50"
             android:layout_marginEnd="5dp"/>
 
@@ -105,7 +104,6 @@
             android:text="Dodaj"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginBottom="30dp"
             android:layout_weight="50"
             android:layout_marginStart="5dp"/>
     </LinearLayout>
