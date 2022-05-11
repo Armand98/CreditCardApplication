@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CardDatabase extends SQLiteOpenHelper {
@@ -116,11 +117,14 @@ public class CardDatabase extends SQLiteOpenHelper {
     public Boolean exportCardDatabase() {
 
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File file = new File(dir, "text");
+        File file = new File(dir, "plik.txt");
+
+        if(file.exists()) {
+            file.mkdirs();
+        }
 
         try {
-            File txtFile = new File(file, "plik.txt");
-            FileWriter writer = new FileWriter(txtFile);
+            FileWriter writer = new FileWriter(file);
             writer.append("Tresc pliku!");
             writer.flush();
             writer.close();

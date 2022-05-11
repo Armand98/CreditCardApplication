@@ -118,6 +118,8 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.exportMenuBtn: {
                 if(checkPermission()) {
                     cardDB.exportCardDatabase();
+                    Toast.makeText(HomeActivity.this, "Po zapisaniu...",
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(HomeActivity.this, "Odmowa dostępu do pamięci",
                             Toast.LENGTH_SHORT).show();
