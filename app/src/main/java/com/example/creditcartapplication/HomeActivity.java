@@ -112,19 +112,20 @@ public class HomeActivity extends AppCompatActivity {
             } return true;
 
             case R.id.importMenuBtn: {
-
+                cardDB.importCardDatabase(username);
+                updateCards();
             } return true;
 
             case R.id.exportMenuBtn: {
                 if(checkPermission()) {
-                    cardDB.exportCardDatabase();
-                    Toast.makeText(HomeActivity.this, "Po zapisaniu...",
-                            Toast.LENGTH_SHORT).show();
+                    if(cardDB.exportCardDatabase(username)) {
+                        Toast.makeText(HomeActivity.this, "Export do folderu Downloads - ukończony",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(HomeActivity.this, "Odmowa dostępu do pamięci",
                             Toast.LENGTH_SHORT).show();
                 }
-                cardDB.exportCardDatabase();
             } return true;
 
             case R.id.logoutMenuBtn: {
@@ -158,6 +159,10 @@ public class HomeActivity extends AppCompatActivity {
         cardList = new ArrayList<>();
 
         cardDB = new CardDatabase(this, username);
+        updateCards();
+    }
+
+    public void updateCards() {
         cardList = cardDB.readCardsFromDB();
 
         cardListAdapter = new CardListAdapter(this, R.layout.adapter_view_layout, cardList);

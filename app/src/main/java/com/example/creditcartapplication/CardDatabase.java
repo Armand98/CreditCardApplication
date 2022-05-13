@@ -8,9 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.widget.Toast;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CardDatabase extends SQLiteOpenHelper {
 
@@ -114,20 +116,67 @@ public class CardDatabase extends SQLiteOpenHelper {
         return cardsList;
     }
 
-    public Boolean exportCardDatabase() {
+    public Boolean exportCardDatabase(String username) {
 
-        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File file = new File(dir, "plik.txt");
+        String filename = username + "-card.csv";
+        File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
-        if(file.exists()) {
-            file.mkdirs();
+        if(!exportDir.exists()) {
+            exportDir.mkdirs();
         }
 
+        File file = new File(exportDir, filename);
+
         try {
-            FileWriter writer = new FileWriter(file);
-            writer.append("Tresc pliku!");
-            writer.flush();
-            writer.close();
+            if(!file.exists()) {
+                file.createNewFile();
+
+            } else {
+                file.delete();
+                file.createNewFile();
+            }
+
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor curCSV = db.rawQuery("SELECT * FROM cards",null);
+            csvWrite.writeNext(curCSV.getColumnNames());
+            while(curCSV.moveToNext())
+            {
+                //Which column you want to exprort
+                String arrStr[] ={Integer.toString(curCSV.getInt(0)),curCSV.getString(1),
+                        curCSV.getString(2), curCSV.getString(3), curCSV.getString(4),
+                        curCSV.getString(5), Integer.toString(curCSV.getInt(6))};
+                csvWrite.writeNext(arrStr);
+            }
+            csvWrite.close();
+            curCSV.close();
+
+            Toast.makeText(mContext.getApplicationContext(), "Zapisano!",
+                    Toast.LENGTH_LONG).show();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Boolean importCardDatabase(String username) {
+
+        String filename = username + "-card.csv";
+        File exportDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+        File file = new File(exportDir, filename);
+
+        try {
+
+            CSVReader csvReader = new CSVReader(new FileReader(file));
+            String[] cardRecord = csvReader.readNext(); // Odczytanie pierwszego wiersza z nagłówkami
+            while((cardRecord = csvReader.readNext()) != null) {
+                insertCardsData(cardRecord[1], cardRecord[2], cardRecord[3],
+                        cardRecord[4], cardRecord[5], Integer.parseInt(cardRecord[6]));
+            }
+
             Toast.makeText(mContext.getApplicationContext(), "Zapisano!",
                     Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -135,5 +184,10 @@ public class CardDatabase extends SQLiteOpenHelper {
         }
 
         return true;
+    }
+
+    public Cursor readCardsFromDBForContentProvider() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("select * from cards", null);
     }
 }
