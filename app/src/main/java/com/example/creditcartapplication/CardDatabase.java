@@ -3,14 +3,15 @@ package com.example.creditcartapplication;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 
 public class CardDatabase extends SQLiteOpenHelper {
 
@@ -19,17 +20,21 @@ public class CardDatabase extends SQLiteOpenHelper {
     public static String packageName = null;
     public static String currentDBPath;
     public Context mContext;
+    SQLiteDatabase sqLiteDatabase;
+    byte [] passphrase;
 
-    public CardDatabase(Context context, String username) {
+    public CardDatabase(Context context, String username, String password) {
         super(context, username + "." + databaseName, null, 1);
         mContext = context;
         packageName = context.getPackageName();
         finalDatabaseName = username + "." + databaseName;
         currentDBPath = "//data//" + packageName + "//databases//" + finalDatabaseName;
+        this.passphrase = SQLiteDatabase.getBytes(password.toCharArray());
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        this.sqLiteDatabase = sqLiteDatabase;
         sqLiteDatabase.execSQL("create table cards(id Integer primary key, bankName TEXT, " +
                 "firstName TEXT, " +
                 "lastName TEXT, " +
@@ -45,7 +50,8 @@ public class CardDatabase extends SQLiteOpenHelper {
 
     public Boolean insertCardsData(String bankName, String firstName, String lastName,
                                    String cardNumber, String ValidThru, int CVC) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        this.sqLiteDatabase.loadLibs(mContext);
+        SQLiteDatabase db = this.getWritableDatabase(passphrase);
         ContentValues values = new ContentValues();
 
         values.put("bankName", bankName);
@@ -61,7 +67,8 @@ public class CardDatabase extends SQLiteOpenHelper {
 
     public Boolean updateCardData(String bankName, String firstName, String lastName,
                                   String cardNumber, String ValidThru, int CVC) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        this.sqLiteDatabase.loadLibs(mContext);
+        SQLiteDatabase db = this.getWritableDatabase(passphrase);
         ContentValues values = new ContentValues();
 
         values.put("bankName", bankName);
@@ -77,7 +84,8 @@ public class CardDatabase extends SQLiteOpenHelper {
     }
 
     public Boolean deleteCard(String cardNumber) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        this.sqLiteDatabase.loadLibs(mContext);
+        SQLiteDatabase db = this.getWritableDatabase(passphrase);
 
         long result = db.delete("cards", "cardNumber=?",
                 new String[]{cardNumber});
@@ -85,7 +93,8 @@ public class CardDatabase extends SQLiteOpenHelper {
     }
 
     public Boolean doesCardExist(String cardNumber) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        this.sqLiteDatabase.loadLibs(mContext);
+        SQLiteDatabase db = this.getWritableDatabase(passphrase);
         Cursor cursor = db.rawQuery("select * from cards where cardNumber=?",
                 new String[] {cardNumber});
         Boolean result = cursor.getCount() > 0;
@@ -94,7 +103,8 @@ public class CardDatabase extends SQLiteOpenHelper {
     }
 
     public ArrayList<Card> readCardsFromDB() {
-        SQLiteDatabase db = this.getWritableDatabase();
+        this.sqLiteDatabase.loadLibs(mContext);
+        SQLiteDatabase db = this.getWritableDatabase(passphrase);
         Cursor cursor = db.rawQuery("select * from cards", null);
 
         ArrayList<Card> cardsList = new ArrayList<>();
@@ -135,7 +145,7 @@ public class CardDatabase extends SQLiteOpenHelper {
             }
 
             CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-            SQLiteDatabase db = this.getReadableDatabase();
+            SQLiteDatabase db = this.getReadableDatabase(passphrase);
             Cursor curCSV = db.rawQuery("SELECT * FROM cards",null);
             csvWrite.writeNext(curCSV.getColumnNames());
             while(curCSV.moveToNext())
@@ -185,7 +195,8 @@ public class CardDatabase extends SQLiteOpenHelper {
     }
 
     public Cursor readCardsFromDBForContentProvider() {
-        SQLiteDatabase db = this.getWritableDatabase();
+        this.sqLiteDatabase.loadLibs(mContext);
+        SQLiteDatabase db = this.getWritableDatabase(passphrase);
         return db.rawQuery("select * from cards", null);
     }
 }

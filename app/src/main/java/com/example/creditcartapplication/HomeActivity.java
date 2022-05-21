@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,7 +20,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +31,7 @@ public class HomeActivity extends AppCompatActivity {
     TextView welcomeTextView;
     ArrayList<Card> cardList;
     CardListAdapter cardListAdapter;
-    String username;
+    String username, password;
     CardDatabase cardDB;
     private static final int STORAGE_PERMISSION_CODE = 100;
     private static final int APP_STORAGE_ACCESS_REQUEST_CODE = 101;
@@ -101,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -110,6 +110,7 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.addNewCardMenuBtn: {
                 Intent intent = new Intent(getApplicationContext(), AddNewCardActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("password", password);
                 startActivity(intent);
             } return true;
 
@@ -131,7 +132,7 @@ public class HomeActivity extends AppCompatActivity {
             } return true;
 
             case R.id.information: {
-                Toast.makeText(HomeActivity.this, "Aby wyświetlić\\schować karte - kliknij. \n Aby edytować - przytrzymaj.",
+                Toast.makeText(HomeActivity.this, "Aby wyświetlić\\ukryć karte - kliknij. \n Aby edytować - przytrzymaj.",
                         Toast.LENGTH_LONG).show();
             } return true;
 
@@ -158,15 +159,17 @@ public class HomeActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            username = extras.getString("username");
+            this.username = extras.getString("username");
+            this.password = extras.getString("password");
         }
 
         welcomeTextView = findViewById(R.id.welcomeTextView);
-        welcomeTextView.setText("Witaj " + username);
+        String welcomeText = "Witaj " + username;
+        welcomeTextView.setText(welcomeText);
         cardsListView = findViewById(R.id.cardsList);
         cardList = new ArrayList<>();
 
-        cardDB = new CardDatabase(this, username);
+        cardDB = new CardDatabase(this, this.username, this.password);
         updateCards();
     }
 
@@ -203,6 +206,7 @@ public class HomeActivity extends AppCompatActivity {
             intent.putExtra("strValidThru", selectedCard.getValidThru());
             intent.putExtra("strCVC", Integer.toString(selectedCard.getCVC()));
             intent.putExtra("username", username);
+            intent.putExtra("password", password);
             startActivity(intent);
             return true;
         });

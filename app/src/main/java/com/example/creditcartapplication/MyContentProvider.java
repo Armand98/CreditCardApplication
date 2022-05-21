@@ -9,11 +9,12 @@ import android.net.Uri;
 public class MyContentProvider extends ContentProvider {
 
     Context mContext;
-    String username;
+    String username, password;
 
-    public MyContentProvider(Context context, String username) {
+    public MyContentProvider(Context context, String username, String password) {
         this.mContext = context;
         this.username = username;
+        this.password = password;
     }
 
     public MyContentProvider() {
@@ -47,7 +48,7 @@ public class MyContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        CardDatabase db = new CardDatabase(mContext, username);
+        CardDatabase db = new CardDatabase(mContext, username, password);
         Cursor cursor = db.readCardsFromDBForContentProvider();
         cursor.setNotificationUri(mContext.getContentResolver(), uri);
 

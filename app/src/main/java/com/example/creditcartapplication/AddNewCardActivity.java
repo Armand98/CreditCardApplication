@@ -17,7 +17,7 @@ public class AddNewCardActivity extends AppCompatActivity {
     EditText tvBankName, tvFirstName, tvLastName, tvCardNumber, tvValidThru, tvCVC;
     Button cancelBtn, addBtn;
     CardDatabase cardDB;
-    String username;
+    String username, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +28,10 @@ public class AddNewCardActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             username = extras.getString("username");
+            password = extras.getString("password");
         }
 
-        cardDB = new CardDatabase(this, username);
+        cardDB = new CardDatabase(this, username, password);
 
         tvBankName = findViewById(R.id.cardNewBankName);
         tvFirstName = findViewById(R.id.cardNewFirstName);
@@ -44,6 +45,7 @@ public class AddNewCardActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
             intent.putExtra("username", username);
+            intent.putExtra("password", password);
             startActivity(intent);
         });
 
@@ -87,6 +89,7 @@ public class AddNewCardActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                     intent.putExtra("username", username);
+                    intent.putExtra("password", password);
                     startActivity(intent);
                 }
             }

@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                     intent.putExtra("username", username_string);
+                    intent.putExtra("password", password_string);
                     startActivity(intent);
                 } else {
                     Toast.makeText(LoginActivity.this, "Logowanie nie powiodło się :(",
