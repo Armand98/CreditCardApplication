@@ -46,7 +46,7 @@
                     android:gravity="center"
                     android:layout_gravity="center"
                     android:text="Nazwisko"
-                    android:layout_weight="25"/>
+                    android:layout_weight="25" />
             </LinearLayout>
 
         </LinearLayout>

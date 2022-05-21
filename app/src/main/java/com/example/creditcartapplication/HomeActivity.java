@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -16,6 +18,9 @@ import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +36,9 @@ public class HomeActivity extends AppCompatActivity {
     CardDatabase cardDB;
     private static final int STORAGE_PERMISSION_CODE = 100;
     private static final int APP_STORAGE_ACCESS_REQUEST_CODE = 101;
-
     private Boolean manageExternalStoragePermission = false;
+
+    boolean sensitiveDataHidden = true;
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     public Boolean checkPermission()
@@ -62,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (Environment.isExternalStorageManager())
                 {
-                    System.out.println("Mamy uprawnienia MANAGE! 222");
+                    System.out.println("Mamy uprawnienia MANAGE!");
                 }
             }
         }
@@ -124,6 +130,11 @@ public class HomeActivity extends AppCompatActivity {
                 }
             } return true;
 
+            case R.id.information: {
+                Toast.makeText(HomeActivity.this, "Aby wyświetlić\\schować karte - kliknij. \n Aby edytować - przytrzymaj.",
+                        Toast.LENGTH_LONG).show();
+            } return true;
+
             case R.id.logoutMenuBtn: {
                 SharedPreferences preferences = getSharedPreferences("checkbox", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
@@ -142,6 +153,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_home);
         Bundle extras = getIntent().getExtras();
 
@@ -161,10 +173,27 @@ public class HomeActivity extends AppCompatActivity {
     public void updateCards() {
         cardList = cardDB.readCardsFromDB();
 
-        cardListAdapter = new CardListAdapter(this, R.layout.adapter_view_layout, cardList);
+        cardListAdapter = new CardListAdapter(this, R.layout.adapter_view_layout, cardList,
+                sensitiveDataHidden);
         cardsListView.setAdapter(cardListAdapter);
 
-        cardsListView.setOnItemClickListener((parent, view, position, id) -> {
+        cardsListView.setOnItemClickListener((adapterView, view, position, l) -> {
+            if(sensitiveDataHidden) {
+                view.findViewById(R.id.cardFirstName).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.cardLastName).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.cardValidThru).setVisibility(View.VISIBLE);
+                view.findViewById(R.id.cardCVC).setVisibility(View.VISIBLE);
+            } else {
+                view.findViewById(R.id.cardFirstName).setVisibility(View.GONE);
+                view.findViewById(R.id.cardLastName).setVisibility(View.GONE);
+                view.findViewById(R.id.cardValidThru).setVisibility(View.GONE);
+                view.findViewById(R.id.cardCVC).setVisibility(View.GONE);
+            }
+            sensitiveDataHidden = !sensitiveDataHidden;
+        });
+
+
+        cardsListView.setOnItemLongClickListener((adapterView, view, position, l) -> {
             Card selectedCard = cardList.get(position);
             Intent intent = new Intent(getApplicationContext(), EditCardActivity.class);
             intent.putExtra("strBankName", selectedCard.getBankName());
@@ -175,6 +204,7 @@ public class HomeActivity extends AppCompatActivity {
             intent.putExtra("strCVC", Integer.toString(selectedCard.getCVC()));
             intent.putExtra("username", username);
             startActivity(intent);
+            return true;
         });
     }
 }

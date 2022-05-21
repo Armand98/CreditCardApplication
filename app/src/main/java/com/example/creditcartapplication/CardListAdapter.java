@@ -18,7 +18,8 @@ public class CardListAdapter extends ArrayAdapter<Card> {
     private Context mContext;
     int mResource;
 
-    public CardListAdapter(@NonNull Context context, int resource, @NonNull ArrayList<Card> objects) {
+    public CardListAdapter(@NonNull Context context, int resource,
+                           @NonNull ArrayList<Card> objects, Boolean sensitiveDataHidden) {
         super(context, resource, objects);
         this.mContext = context;
         this.mResource = resource;
@@ -33,8 +34,6 @@ public class CardListAdapter extends ArrayAdapter<Card> {
         String cardNumber = getItem(position).getCardNumber();
         String validThru = getItem(position).getValidThru();
         int CVC = getItem(position).getCVC();
-
-        //Card card = new Card(bankName, firstName, lastName, cardNumber, validThru, CVC);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
@@ -52,6 +51,11 @@ public class CardListAdapter extends ArrayAdapter<Card> {
         tvCardNumber.setText(cardNumber);
         tvCardValidThru.setText(validThru);
         tvCardCVC.setText(Integer.toString(CVC));
+
+        tvCardFirstName.setVisibility(View.GONE);
+        tvCardLastName.setVisibility(View.GONE);
+        tvCardValidThru.setVisibility(View.GONE);
+        tvCardCVC.setVisibility(View.GONE);
 
         return convertView;
     }

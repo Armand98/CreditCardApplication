@@ -3,6 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Armand/Desktop/Projekty/Android Studio/CreditCardApplication/app/src/main/res/layout/activity_add_new_card.xml" value="0.38125" />
+        <entry key="..\:/Users/Armand/Desktop/Projekty/Android Studio/CreditCardApplication/app/src/main/res/layout/activity_edit_card.xml" value="0.38125" />
+        <entry key="..\:/Users/Armand/Desktop/Projekty/Android Studio/CreditCardApplication/app/src/main/res/layout/activity_home.xml" value="0.38125" />
+        <entry key="..\:/Users/Armand/Desktop/Projekty/Android Studio/CreditCardApplication/app/src/main/res/layout/activity_login.xml" value="0.38125" />
+        <entry key="..\:/Users/Armand/Desktop/Projekty/Android Studio/CreditCardApplication/app/src/main/res/layout/activity_register.xml" value="0.38125" />
+        <entry key="..\:/Users/Armand/Desktop/Projekty/Android Studio/CreditCardApplication/app/src/main/res/layout/adapter_view_layout.xml" value="0.1" />
+        <entry key="..\:/Users/Armand/Desktop/Projekty/Android Studio/CreditCardApplication/app/src/main/res/menu/main_menu.xml" value="0.27685185185185185" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/CreditCartApplication/app/src/main/res/drawable/ic_main_menu.xml" value="0.221" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/CreditCartApplication/app/src/main/res/layout/activity_add_new_card.xml" value="0.271875" />
         <entry key="..\:/Users/DELL/AndroidStudioProjects/CreditCartApplication/app/src/main/res/layout/activity_edit_card.xml" value="0.24547101449275363" />

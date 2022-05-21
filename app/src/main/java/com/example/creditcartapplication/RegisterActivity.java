@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_register);
 
         username = findViewById(R.id.username);
@@ -28,45 +30,42 @@ public class RegisterActivity extends AppCompatActivity {
         login = findViewById(R.id.createAnAccountBtn);
         DB = new UserDatabase(this);
 
-        signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String username_string = username.getText().toString();
-                String password_string = password.getText().toString();
-                String rePassword_string = repassword.getText().toString();
+        signup.setOnClickListener(view -> {
+            String username_string = username.getText().toString();
+            String password_string = password.getText().toString();
+            String rePassword_string = repassword.getText().toString();
 
-                if(TextUtils.isEmpty(username_string) ||
-                        TextUtils.isEmpty(password_string) ||
-                        TextUtils.isEmpty(rePassword_string))
-                    Toast.makeText(RegisterActivity.this, "Wypełnij poprawnie formularz",
-                            Toast.LENGTH_SHORT).show();
-                else {
-                    if(password_string.equals(rePassword_string)) {
-                        Boolean checkUser = DB.checkUsername(username_string);
-                        if (checkUser == false) {
-                            Boolean insert = DB.insertUserData(username_string, password_string);
-                            if(insert == true) {
-                                Toast.makeText(RegisterActivity.this,
-                                        "Rejestracja pomyślna - zaloguj się",
-                                        Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getApplicationContext(),
-                                        LoginActivity.class);
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(RegisterActivity.this,
-                                        "Wystąpił błąd podczas rejestracji",
-                                        Toast.LENGTH_SHORT).show();
-                            }
+            if(TextUtils.isEmpty(username_string) ||
+                    TextUtils.isEmpty(password_string) ||
+                    TextUtils.isEmpty(rePassword_string))
+                Toast.makeText(RegisterActivity.this, "Wypełnij poprawnie formularz",
+                        Toast.LENGTH_SHORT).show();
+            else {
+                if(password_string.equals(rePassword_string)) {
+                    Boolean checkUser = DB.checkUsername(username_string);
+                    if (checkUser == false) {
+                        Boolean insert = DB.insertUserData(username_string, password_string);
+                        if(insert == true) {
+                            Toast.makeText(RegisterActivity.this,
+                                    "Rejestracja pomyślna - zaloguj się",
+                                    Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(),
+                                    LoginActivity.class);
+                            startActivity(intent);
                         } else {
                             Toast.makeText(RegisterActivity.this,
-                                    "Ten użytkownik już istnieje",
+                                    "Wystąpił błąd podczas rejestracji",
                                     Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(RegisterActivity.this,
-                                "Podane hasła nie zgadzają się",
+                                "Ten użytkownik już istnieje",
                                 Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(RegisterActivity.this,
+                            "Podane hasła nie zgadzają się",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });

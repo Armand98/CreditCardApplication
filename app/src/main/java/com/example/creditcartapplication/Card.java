@@ -1,7 +1,5 @@
 package com.example.creditcartapplication;
 
-import java.util.Date;
-
 public class Card {
     private int id;
     private String bankName;
